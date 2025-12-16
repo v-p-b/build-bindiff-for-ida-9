@@ -86,25 +86,6 @@ jobs:
           -DBoost_INCLUDE_DIR="${{ steps.install-boost.outputs.BOOST_ROOT }}/include" \
           -DBoost_LIBRARY_DIRS="${{ steps.install-boost.outputs.BOOST_ROOT }}/lib"
 
-    - name: Build
-      working-directory: build/out
-      shell: bash
-      run: cmake --build . --config "${BUILD_TYPE}"
-
-    - name: Test
-      working-directory: build/out
-      shell: bash
-      run: ctest --build-config "${BUILD_TYPE}" --output-on-failure -R '^[A-Z]'
-
-    - name: Upload Build Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: BinDiff-IDA-${{ env.IDA_VERSION_FOR_ARTIFACT_NAME }}-${{ matrix.os }}
-        path: |
-          build/out/bindiff
-          build/out/bindiff.exe
-          build/out/ida/bindiff*
-          build/out/tools/bindiff*
 
     - name: Configure CMake (binexport)
       shell: bash
