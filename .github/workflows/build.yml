@@ -8,10 +8,10 @@ on:
 
 env:
   BUILD_TYPE: Release
-  IDA_VERSION_FOR_ARTIFACT_NAME: "9.1.250226"
-  URL_TO_IDASDK_ZIP: https://vaclive.party/software/ida-pro/releases/download/9.1.250226/idasdk91.zip
-  SHA256_IDASDK_ZIP: 508f690e49ab0415a3f8d422826954ac8d3ae9b92f48121fcd1e53c68bc7e1f2
-  PATH_TO_IDASDK_CONTENT: idasdk91
+  IDA_VERSION_FOR_ARTIFACT_NAME: "9.2.250908"
+  URL_TO_IDASDK_ZIP: https://scrapco.de/shared251207/idasdk92.zip
+  SHA256_IDASDK_ZIP: fafa43237088ea32aaa7210816732e8cc12a0654a9a6190c50e85579962127d1
+  PATH_TO_IDASDK_CONTENT: idasdk92
 
 jobs:
   build:
@@ -19,10 +19,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - os: ubuntu-24.04
-        - os: ubuntu-22.04
-        - os: macos-14
-        - os: macos-13
         - os: windows-2022
     runs-on: ${{ matrix.os }}
 
@@ -49,19 +45,6 @@ jobs:
     - name: Install ninja-build tool
       uses: aseprite/get-ninja@main
 
-    - name: Get idasdk
-      if: matrix.os != 'windows-2022'
-      shell: bash
-      run: |
-        mkdir -p build/out build/ida
-        curl -L -o build/idasdk.zip "${{ env.URL_TO_IDASDK_ZIP }}"
-        echo "${{ env.SHA256_IDASDK_ZIP }}  build/idasdk.zip" | shasum -a 256 --check -
-        if [ $? -ne 0 ]; then
-          echo "[!] SHA256 checksum does not match. Aborting."
-          exit 1
-        fi
-        unzip -q build/idasdk.zip -d build/ida/
-
     - name: Get idasdk (Windows)
       if: matrix.os == 'windows-2022'
       shell: pwsh
@@ -79,10 +62,6 @@ jobs:
     - name: Enable Developer Command Prompt (Windows)
       if: matrix.os == 'windows-2022'
       uses: ilammy/msvc-dev-cmd@v1.12.1
-
-    - name: Enable mold linker (Linux)
-      if: matrix.os == 'ubuntu-24.04' || matrix.os == 'ubuntu-22.04'
-      uses: rui314/setup-mold@v1
 
     - name: Install boost
       uses: MarkusJx/install-boost@v2
